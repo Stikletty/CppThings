@@ -39,27 +39,43 @@ bool dirExists(const std::string& dirName_in)
 */
 
 
-/*
-
-	Get work directory path:
-
-	int bytes = GetModuleFileName(NULL, pBuf, len);
-	if(bytes == 0)
-	return -1;
-	else
-	return bytes;
-*/
-
-
 /**
 * Fájl létezést vizsgálja. Nem használom.
 *
 * @param std::string logfilepath The path to the Logfile
 * @return
 */
-inline bool exists(const std::string& name) {
+inline bool Logger::DirectoryExists(const std::string& name) {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
+}
+
+/**
+* Dátum és idõ lekérésére szolgál.
+*
+* @param 
+* @return std::string "%Y-%m-%d %H:%M:%S" formátumban az idõt adja vissza.
+*/
+std::string Logger::GetCurrentTimeString() {
+	auto t = std::time(nullptr);
+	std::tm tm;
+	localtime_s(&tm, &t);
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+    auto str = oss.str();
+	return str;
+}
+
+int Logger::GetWorkDir()
+{
+	CHAR pBuf[MAX_PATH];
+
+	int bytes = GetModuleFileNameA(NULL, pBuf, MAX_PATH);
+	if (bytes == 0)
+		return -1;
+	else
+		return bytes;
 }
 
 /**
@@ -73,10 +89,10 @@ Logger::Logger(const std::string& logfilepath)
 	logfile.open(logfilepath, std::fstream::out | std::fstream::app);
 	if (logfile.is_open())
 	{
-		logfile << "Logging started.";			
+		logfile << this->GetCurrentTime() <<" - Logging started." << std::endl;			
 		logfile.close();
 	}
-	else std::cout << "Unable to open file";
+	else std::cout << "Unable to open file" << std::endl;
 }
 
 
