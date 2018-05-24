@@ -10,29 +10,26 @@
 #pragma once
 
 #include <string>
-//fájl mûveletekhez
-#include <iostream>
-#include <fstream>
-//idõ megállapításhoz
-#include <iomanip>
-#include <ctime>
-#include <sstream>
-//aktuális könyvtárhoz
-#include <Windows.h>
-#include <direct.h>
+#include <iostream> //fájl mûveletekhez
+#include <fstream> //fájl mûveletekhez
+#include <iomanip> //idõ megállapításhoz
+#include <ctime> //idõ megállapításhoz
+#include <sstream> //idõ megállapításhoz
+#include <Windows.h> //aktuális könyvtárhoz
+#include <direct.h> //aktuális könyvtárhoz
 
 class Logger
 {
 //functions
 public:
 	Logger();
-	Logger(const std::string& logfilepath);
+	Logger(const std::string& logfilename);
 	~Logger();
 
 private:
 	inline bool DirectoryExists(const std::string& name);
 	std::string GetCurrentTimeString();
-	int GetWorkDir();
+	std::string GetWorkDir();
 	
 //variables
 private:

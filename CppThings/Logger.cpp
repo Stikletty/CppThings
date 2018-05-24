@@ -67,15 +67,21 @@ std::string Logger::GetCurrentTimeString() {
 	return str;
 }
 
-int Logger::GetWorkDir()
+std::string Logger::GetWorkDir()
 {
 	CHAR pBuf[MAX_PATH];
+	std::string fileName;
+
 
 	int bytes = GetModuleFileNameA(NULL, pBuf, MAX_PATH);
 	if (bytes == 0)
-		return -1;
-	else
-		return bytes;
+		return "";
+	else {
+		fileName = pBuf;
+		fileName.erase(fileName.find_last_of("\\")+1, fileName.length());
+		return fileName;
+	}
+		
 }
 
 /**
@@ -84,12 +90,15 @@ int Logger::GetWorkDir()
 * @param std::string logfilepath The path to the Logfile
 * @return
 */
-Logger::Logger(const std::string& logfilepath)
+Logger::Logger(const std::string& logfilename)
 {
-	logfile.open(logfilepath, std::fstream::out | std::fstream::app);
+	std::string fullLogFilePath = this->GetWorkDir() + logfilename;
+
+	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
 	if (logfile.is_open())
 	{
-		logfile << this->GetCurrentTime() <<" - Logging started." << std::endl;			
+		logfile << this->GetCurrentTimeString() << " - Logging started." << std::endl;
+		logfile << this->GetCurrentTimeString() << this->GetWorkDir() << " - Current directory." << std::endl;
 		logfile.close();
 	}
 	else std::cout << "Unable to open file" << std::endl;
