@@ -98,12 +98,25 @@ Logger::Logger(const std::string& logfilename)
 	if (logfile.is_open())
 	{
 		logfile << this->GetCurrentTimeString() << " - Logging started." << std::endl;
-		logfile << this->GetCurrentTimeString() << this->GetWorkDir() << " - Current directory." << std::endl;
+		logfile << this->GetCurrentTimeString() << this->GetWorkDir() << " - Logging directory." << std::endl;
 		logfile.close();
 	}
 	else std::cout << "Unable to open file" << std::endl;
 }
 
+Logger::Logger(const std::string& logFileDirectory, const std::string& logFileName)
+{
+	std::string fullLogFilePath = this->GetWorkDir() + logfilename;
+
+	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
+	if (logfile.is_open())
+	{
+		logfile << this->GetCurrentTimeString() << " - Logging started." << std::endl;
+		logfile << this->GetCurrentTimeString() << this->GetWorkDir() << " - Logging directory." << std::endl;
+		logfile.close();
+	}
+	else std::cout << "Unable to open file" << std::endl;
+}
 
 /**
  * Logges class destructor
