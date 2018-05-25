@@ -20,30 +20,11 @@ Logger::Logger()
 {
 }
 
-//TODO: Esetleg mappa ellenõrzésre használható lenne.
-/*
-#include <windows.h>
-#include <string>
-
-bool dirExists(const std::string& dirName_in)
-{
-  DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
-  if (ftyp == INVALID_FILE_ATTRIBUTES)
-    return false;  //something is wrong with your path!
-
-  if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
-    return true;   // this is a directory!
-
-  return false;    // this is not a directory!
-}
-*/
-
-
 /**
-* Fájl létezést vizsgálja. Nem használom.
+* Könyvtár létezést vizsgálja.
 *
-* @param std::string logfilepath The path to the Logfile
-* @return
+* @param std::string name Directory path
+* @return bool true -> exists, false -> not exists
 */
 inline bool Logger::DirectoryExists(const std::string& name) {
 	struct stat buffer;
@@ -86,36 +67,62 @@ std::string Logger::GetWorkDir()
 
 /**
 * Logges class constructor overload
+* Log file will be in the directory where the program exe is.
 *
 * @param std::string logfilepath The path to the Logfile
 * @return
 */
-Logger::Logger(const std::string& logfilename)
+Logger::Logger(const std::string& logFileName)
 {
-	std::string fullLogFilePath = this->GetWorkDir() + logfilename;
+	std::string fullLogFilePath = this->GetWorkDir() + logFileName;
 
 	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
 	if (logfile.is_open())
 	{
 		logfile << this->GetCurrentTimeString() << " - Logging started." << std::endl;
-		logfile << this->GetCurrentTimeString() << this->GetWorkDir() << " - Logging directory." << std::endl;
+		logfile << this->GetCurrentTimeString() << " - Logging directory: " << this->GetWorkDir() << std::endl;
 		logfile.close();
 	}
-	else std::cout << "Unable to open file" << std::endl;
+	else std::cout << "ERROR: Unable to open file: " << fullLogFilePath << std::endl;
 }
 
+/**
+* Logges class constructor overload
+* User defined log directory
+*
+* @param std::string logFileDirectory The path to the logfile with "\" on the end.
+* @param std::string logfilepath The path to the Logfile.
+* @return
+*/
 Logger::Logger(const std::string& logFileDirectory, const std::string& logFileName)
 {
-	std::string fullLogFilePath = this->GetWorkDir() + logfilename;
+	std::string fullLogFilePath = "";
+	bool customDirectoryExists = true;
+
+	if (this->DirectoryExists(logFileDirectory)) {
+		fullLogFilePath = logFileDirectory + logFileName;
+	}
+	else {
+		fullLogFilePath = this->GetWorkDir() + logFileName;
+		customDirectoryExists = false;
+	}	
+
+	std::cout << "!! DEBUG !! -> full path:" << fullLogFilePath << std::endl;
 
 	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
 	if (logfile.is_open())
 	{
 		logfile << this->GetCurrentTimeString() << " - Logging started." << std::endl;
-		logfile << this->GetCurrentTimeString() << this->GetWorkDir() << " - Logging directory." << std::endl;
+		logfile << this->GetCurrentTimeString() << " - Work directory: " << this->GetWorkDir() << std::endl;
+		if (customDirectoryExists) {
+			logfile << this->GetCurrentTimeString() << " - Log directory: " << logFileDirectory << std::endl;
+		}
+		else {
+			logfile << this->GetCurrentTimeString() << " - Can't open defined log directory. Log directory will be the work directory: " << this->GetWorkDir() << std::endl;
+		}
 		logfile.close();
 	}
-	else std::cout << "Unable to open file" << std::endl;
+	else std::cout << "ERROR: Unable to open file: " << fullLogFilePath << std::endl;
 }
 
 /**

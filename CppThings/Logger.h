@@ -23,7 +23,8 @@ class Logger
 //functions
 public:
 	Logger();
-	Logger(const std::string& logfilename);
+	Logger(const std::string& logFileName);
+	Logger(const std::string& logFileDirectory, const std::string& logFileName);
 	~Logger();
 
 private:
