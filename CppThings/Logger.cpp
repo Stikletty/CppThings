@@ -20,50 +20,6 @@ Logger::Logger()
 {
 }
 
-/**
-* Könyvtár létezést vizsgálja.
-*
-* @param std::string name Directory path
-* @return bool true -> exists, false -> not exists
-*/
-inline bool Logger::DirectoryExists(const std::string& name) {
-	struct stat buffer;
-	return (stat(name.c_str(), &buffer) == 0);
-}
-
-/**
-* Dátum és idõ lekérésére szolgál.
-*
-* @param 
-* @return std::string "%Y-%m-%d %H:%M:%S" formátumban az idõt adja vissza.
-*/
-std::string Logger::GetCurrentTimeString() {
-	auto t = std::time(nullptr);
-	std::tm tm;
-	localtime_s(&tm, &t);
-
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
-    auto str = oss.str();
-	return str;
-}
-
-std::string Logger::GetWorkDir()
-{
-	CHAR pBuf[MAX_PATH];
-	std::string fileName;
-
-
-	int bytes = GetModuleFileNameA(NULL, pBuf, MAX_PATH);
-	if (bytes == 0)
-		return "";
-	else {
-		fileName = pBuf;
-		fileName.erase(fileName.find_last_of("\\")+1, fileName.length());
-		return fileName;
-	}
-		
-}
 
 /**
 * Logges class constructor overload
@@ -74,13 +30,13 @@ std::string Logger::GetWorkDir()
 */
 Logger::Logger(const std::string& logFileName)
 {
-	std::string fullLogFilePath = this->GetWorkDir() + logFileName;
+	std::string fullLogFilePath = utility.GetWorkDir() + logFileName;
 
 	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
 	if (logfile.is_open())
 	{
-		logfile << this->GetCurrentTimeString() << " - Logging started." << std::endl;
-		logfile << this->GetCurrentTimeString() << " - Logging directory: " << this->GetWorkDir() << std::endl;
+		logfile << utility.GetCurrentTimeString() << " - Logging started." << std::endl;
+		logfile << utility.GetCurrentTimeString() << " - Logging directory: " << utility.GetWorkDir() << std::endl;
 		logfile.close();
 	}
 	else std::cout << "ERROR: Unable to open file: " << fullLogFilePath << std::endl;
@@ -99,11 +55,11 @@ Logger::Logger(const std::string& logFileDirectory, const std::string& logFileNa
 	std::string fullLogFilePath = "";
 	bool customDirectoryExists = true;
 
-	if (this->DirectoryExists(logFileDirectory)) {
+	if (utility.DirectoryExists(logFileDirectory)) {
 		fullLogFilePath = logFileDirectory + logFileName;
 	}
 	else {
-		fullLogFilePath = this->GetWorkDir() + logFileName;
+		fullLogFilePath = utility.GetWorkDir() + logFileName;
 		customDirectoryExists = false;
 	}	
 
@@ -112,13 +68,13 @@ Logger::Logger(const std::string& logFileDirectory, const std::string& logFileNa
 	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
 	if (logfile.is_open())
 	{
-		logfile << this->GetCurrentTimeString() << " - Logging started." << std::endl;
-		logfile << this->GetCurrentTimeString() << " - Work directory: " << this->GetWorkDir() << std::endl;
+		logfile << utility.GetCurrentTimeString() << " - Logging started." << std::endl;
+		logfile << utility.GetCurrentTimeString() << " - Work directory: " << utility.GetWorkDir() << std::endl;
 		if (customDirectoryExists) {
-			logfile << this->GetCurrentTimeString() << " - Log directory: " << logFileDirectory << std::endl;
+			logfile << utility.GetCurrentTimeString() << " - Log directory: " << logFileDirectory << std::endl;
 		}
 		else {
-			logfile << this->GetCurrentTimeString() << " - Can't open defined log directory. Log directory will be the work directory: " << this->GetWorkDir() << std::endl;
+			logfile << utility.GetCurrentTimeString() << " - Can't open defined log directory. Log directory will be the work directory: " << utility.GetWorkDir() << std::endl;
 		}
 		logfile.close();
 	}

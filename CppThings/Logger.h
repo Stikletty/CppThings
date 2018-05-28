@@ -12,11 +12,8 @@
 #include <string>
 #include <iostream> //fájl mûveletekhez
 #include <fstream> //fájl mûveletekhez
-#include <iomanip> //idõ megállapításhoz
-#include <ctime> //idõ megállapításhoz
-#include <sstream> //idõ megállapításhoz
-#include <Windows.h> //aktuális könyvtárhoz
-#include <direct.h> //aktuális könyvtárhoz
+#include "Utility.h" //könyvtár, idõ, stb.. lekérdezés
+
 
 class Logger
 {
@@ -28,13 +25,12 @@ public:
 	~Logger();
 
 private:
-	inline bool DirectoryExists(const std::string& name);
-	std::string GetCurrentTimeString();
-	std::string GetWorkDir();
+
 	
 //variables
 private:
 	std::ofstream logfile;
+	Utility utility;
 
 
 };
