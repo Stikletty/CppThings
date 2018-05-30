@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream> //fájl mûveletekhez
 #include <iomanip> //idõ megállapításhoz
 #include <ctime> //idõ megállapításhoz
 #include <sstream> //idõ megállapításhoz
@@ -16,13 +17,13 @@ public:
 	~Utility();
 
 public:
-	inline bool DirectoryExists(const std::string& name);
+	bool DirectoryExists(const std::string& name);	
 	std::string GetCurrentTimeString();
 	std::string GetWorkDir();
 	std::string GetThisComputerName();
 	std::string GetThisUserName();
 
 private:
-	void printError( TCHAR* msg );
+	std::string WcharToString(const wchar_t input[INFO_BUFFER_SIZE]);
 };
 

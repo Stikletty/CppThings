@@ -35,7 +35,9 @@ Logger::Logger(const std::string& logFileName)
 	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
 	if (logfile.is_open())
 	{
-		logfile << utility.GetCurrentTimeString() << " - Logging started." << std::endl;
+		logfile << utility.GetCurrentTimeString() << " - ******Logger started.******" << std::endl;
+		logfile << utility.GetCurrentTimeString() << " - Computer name: " << utility.GetThisComputerName() << std::endl;
+		logfile << utility.GetCurrentTimeString() << " - User name: " << utility.GetThisUserName() << std::endl;
 		logfile << utility.GetCurrentTimeString() << " - Logging directory: " << utility.GetWorkDir() << std::endl;
 		logfile.close();
 	}
@@ -65,18 +67,20 @@ Logger::Logger(const std::string& logFileDirectory, const std::string& logFileNa
 
 	std::cout << "!! DEBUG !! -> full path:" << fullLogFilePath << std::endl;
 
-	logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
-	if (logfile.is_open())
+	this->logfile.open(fullLogFilePath, std::fstream::out | std::fstream::app);
+	if (this->logfile.is_open())
 	{
-		logfile << utility.GetCurrentTimeString() << " - Logging started." << std::endl;
-		logfile << utility.GetCurrentTimeString() << " - Work directory: " << utility.GetWorkDir() << std::endl;
+		this->logfile << utility.GetCurrentTimeString() << " - ******Logger started.******" << std::endl;
+		this->logfile << utility.GetCurrentTimeString() << " - Work directory: " << utility.GetWorkDir() << std::endl;
+		this->logfile << utility.GetCurrentTimeString() << " - Computer name: " << utility.GetThisComputerName() << std::endl;
+		this->logfile << utility.GetCurrentTimeString() << " - User name: " << utility.GetThisUserName() << std::endl;
 		if (customDirectoryExists) {
-			logfile << utility.GetCurrentTimeString() << " - Log directory: " << logFileDirectory << std::endl;
+			this->logfile << utility.GetCurrentTimeString() << " - Log directory: " << logFileDirectory << std::endl;
 		}
 		else {
-			logfile << utility.GetCurrentTimeString() << " - Can't open defined log directory. Log directory will be the work directory: " << utility.GetWorkDir() << std::endl;
+			this->logfile << utility.GetCurrentTimeString() << " - Can't open defined log directory. Log directory will be the work directory: " << utility.GetWorkDir() << std::endl;
 		}
-		logfile.close();
+		//logfile.close();
 	}
 	else std::cout << "ERROR: Unable to open file: " << fullLogFilePath << std::endl;
 }
@@ -89,4 +93,17 @@ Logger::Logger(const std::string& logFileDirectory, const std::string& logFileNa
  */
 Logger::~Logger()
 {
+	if (this->logfile.is_open()) {
+		this->logfile << utility.GetCurrentTimeString() << " - ******Logger ended.******" << std::endl;
+		this->logfile.close();
+	}
+}
+
+void Logger::LogToFile(const std::string message)
+{
+
+	if (this->logfile.is_open()) {
+		this->logfile << utility.GetCurrentTimeString() << " - " << message << std::endl;
+	}
+
 }

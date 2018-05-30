@@ -23,6 +23,7 @@ public:
 	Logger(const std::string& logFileName);
 	Logger(const std::string& logFileDirectory, const std::string& logFileName);
 	~Logger();
+	void LogToFile(const std::string message);
 
 private:
 
